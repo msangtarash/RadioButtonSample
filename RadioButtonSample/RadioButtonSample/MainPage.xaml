@@ -4,22 +4,21 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:app="clr-namespace:RadioButtonSample">
-
-    <StackLayout>
+    <ContentPage.BindingContext>
+        <app:MainPageViewModel />
+    </ContentPage.BindingContext>
+    <StackLayout Padding="10">
         <app:RadioButtonView
-            Key="Men"
-            BorderColor="Black"
-            InerCircleColor="Blue"
-            Text="Men"
-            Type="{x:Type app:Gender}"
+            Key="{x:Static app:Gender.Man}"
+            Text="Man"
             Value="{Binding Person.Gender}" />
         <app:RadioButtonView
-            Key="Wemon"
-            BorderColor="Black"
-            InerCircleColor="Blue"
-            Text="Wemon"
-            Type="{x:Type app:Gender}"
+            Key="{x:Static app:Gender.Woman}"
+            Text="Woman"
+            Value="{Binding Person.Gender}" />
+        <app:RadioButtonView
+            Key="{x:Static app:Gender.Other}"
+            Text="Other"
             Value="{Binding Person.Gender}" />
     </StackLayout>
-
 </ContentPage>

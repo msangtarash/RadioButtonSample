@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -14,15 +12,14 @@ namespace RadioButtonSample
 
         internal static void UnSelectOtherRadioButtonViews(RadioButtonView currentRadioButtonView)
         {
-            foreach (var radioButtonWeakReference in RadioButtonViews)
+            foreach (WeakReference<RadioButtonView> radioButtonWeakReference in RadioButtonViews)
             {
-                if (radioButtonWeakReference.TryGetTarget(out RadioButtonView radioButtonView) && radioButtonView != currentRadioButtonView && radioButtonView.Type == currentRadioButtonView.Type)
+                if (radioButtonWeakReference.TryGetTarget(out RadioButtonView radioButtonView) && radioButtonView != currentRadioButtonView && radioButtonView.Key.GetType() == currentRadioButtonView.Key.GetType())
                 {
                     radioButtonView.IsSelected = false;
                 }
             }
         }
-
         public RadioButtonView()
         {
             RadioButtonViews.Add(new WeakReference<RadioButtonView>(this));
@@ -32,12 +29,24 @@ namespace RadioButtonSample
             SelectedTappedCommand = new Command<RadioButtonView>(radioButton =>
             {
                 Value = Key;
-                IsSelected = !IsSelected;
+                IsSelected = true;
                 UnSelectOtherRadioButtonViews(radioButton);
             });
         }
 
-        public virtual Xamarin.Forms.View Content { get; set; }
+        public virtual void SelectedItemChanged()
+        {
+            if (Value.Equals(Key))
+            {
+                IsSelected = true;
+            }               
+        }
+
+        public virtual View Content { get; set; }
+
+        public bool IsSelected { get; protected set; }
+
+        public ICommand SelectedTappedCommand { get; protected set; }
 
         public static BindableProperty BorderColorProperty = BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(RadioButtonView), defaultValue: Color.Gray, defaultBindingMode: BindingMode.OneWay);
 
@@ -47,20 +56,12 @@ namespace RadioButtonSample
             set => SetValue(BorderColorProperty, value);
         }
 
-        public static BindableProperty InerCircleColorProperty = BindableProperty.Create(nameof(InerCircleColor), typeof(Color), typeof(RadioButtonView), defaultValue: Color.White, defaultBindingMode: BindingMode.OneWay);
+        public static BindableProperty InerCircleColorProperty = BindableProperty.Create(nameof(InerCircleColor), typeof(Color), typeof(RadioButtonView), defaultValue: Color.Blue, defaultBindingMode: BindingMode.OneWay);
 
         public virtual Color InerCircleColor
         {
             get => (Color)GetValue(InerCircleColorProperty);
             set => SetValue(InerCircleColorProperty, value);
-        }
-
-        public static BindableProperty IsSelectedProperty = BindableProperty.Create(nameof(IsSelected), typeof(bool), typeof(RadioButtonView), defaultValue: false, defaultBindingMode: BindingMode.TwoWay);
-
-        public virtual bool IsSelected
-        {
-            get => (bool)GetValue(IsSelectedProperty);
-            set => SetValue(IsSelectedProperty, value);
         }
 
         public static BindableProperty InerCircleRadiusProperty = BindableProperty.Create(nameof(InerCircleRadius), typeof(double), typeof(RadioButtonView), defaultValue: 12d, defaultBindingMode: BindingMode.OneWay);
@@ -87,7 +88,7 @@ namespace RadioButtonSample
             set => SetValue(TextProperty, value);
         }
 
-        public static BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(RadioButtonView), defaultValue: Color.Black, defaultBindingMode: BindingMode.OneTime);
+        public static BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(RadioButtonView), defaultValue: Color.Black, defaultBindingMode: BindingMode.OneWay);
 
         public Color TextColor
         {
@@ -95,29 +96,23 @@ namespace RadioButtonSample
             set { SetValue(TextColorProperty, value); }
         }
 
-        public ICommand SelectedTappedCommand { get; set; }
+        public static BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(object), typeof(RadioButtonView), defaultValue: null, defaultBindingMode: BindingMode.OneWay);
 
-        public static BindableProperty KeyProperty = BindableProperty.Create(nameof(Key), typeof(string), typeof(RadioButtonView), defaultValue: null, defaultBindingMode: BindingMode.OneWay);
-
-        public virtual string Key
+        public virtual object Key
         {
-            get => (string)GetValue(KeyProperty);
+            get => GetValue(KeyProperty);
             set => SetValue(KeyProperty, value);
         }
 
-        public static BindableProperty TypeProperty = BindableProperty.Create(nameof(Type), typeof(Type), typeof(RadioButtonView), defaultValue: null, defaultBindingMode: BindingMode.OneWay);
-
-        public virtual Type Type
+        public static BindableProperty ValueProperty = BindableProperty.Create(nameof(Value), typeof(object), typeof(RadioButtonView), defaultValue: null, defaultBindingMode: BindingMode.TwoWay, propertyChanged: (sender, oldValue, newValue) =>
         {
-            get => (Type)GetValue(TypeProperty);
-            set => SetValue(TypeProperty, value);
-        }
-
-        public static BindableProperty ValueProperty = BindableProperty.Create(nameof(Value), typeof(object), typeof(RadioButtonView), defaultValue: null, defaultBindingMode: BindingMode.TwoWay);
+            RadioButtonView radioButtonView = (RadioButtonView)sender;
+            radioButtonView.SelectedItemChanged();
+        });
 
         public virtual object Value
         {
-            get => (object)GetValue(ValueProperty);
+            get =>  (object)GetValue(ValueProperty);
             set => SetValue(ValueProperty, value);
         }
     }

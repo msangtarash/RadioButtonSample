@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace RadioButtonSample
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public Person Person { get; set; }
+
         public MainPageViewModel()
         {
-
+            Person = new Person
+            {
+                Name = "Yas",
+                Gender = Gender.Man
+            };
         }
     }
 
     public enum Gender
     {
-        Men, Femail, Other
+        Man, Woman, Other
     }
 
     public class Person : INotifyPropertyChanged
     {
         public string Name { get; set; }
+
         public Gender Gender { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
