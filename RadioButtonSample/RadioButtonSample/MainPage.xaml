@@ -1,14 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:RadioButtonSample"
-             x:Class="RadioButtonSample.MainPage">
+<ContentPage
+    x:Class="RadioButtonSample.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:app="clr-namespace:RadioButtonSample">
 
     <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <app:RadioButtonView
+            Key="Men"
+            BorderColor="Black"
+            InerCircleColor="Blue"
+            Text="Men"
+            Type="{x:Type app:Gender}"
+            Value="{Binding Person.Gender}" />
+        <app:RadioButtonView
+            Key="Wemon"
+            BorderColor="Black"
+            InerCircleColor="Blue"
+            Text="Wemon"
+            Type="{x:Type app:Gender}"
+            Value="{Binding Person.Gender}" />
     </StackLayout>
 
 </ContentPage>
